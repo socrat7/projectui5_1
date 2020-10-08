@@ -1,0 +1,140 @@
+<core:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" 	xmlns:l="sap.ui.layout"
+	xmlns:f="sap.ui.layout.form"
+		controllerName="tablebinding.view1" xmlns:html="http://www.w3.org/1999/xhtml">
+	<Page title="CRUD Operations">
+		<content>
+		
+			<Table 
+				id="idEmployeeTable"
+				inset="false"
+				mode="SingleSelectLeft"
+				items="{
+							path: '/ztableSet'
+						
+		}">
+		<headerToolbar>
+			<Toolbar>
+				<Title text="Employee Details" level="H2"/>
+			</Toolbar>
+		</headerToolbar>
+		<columns>
+		
+			<Column>
+				<Text text="Employee ID" />
+			</Column>
+			
+			<Column>
+				<Text text="First Name" />
+			</Column>
+			
+			<Column>
+				<Text text="Last Name" />
+			</Column>
+			
+			<Column>
+				<Text text="Address" />
+			</Column>
+			
+			<Column>
+				<Text text="Designation" />
+			</Column>
+			
+		</columns>
+		<items>
+			<ColumnListItem>
+				<cells>
+					
+					<Text 
+					text="{Empno}" />
+					<Text 
+					text="{Fname}" />
+					<Text 
+					text="{Lname}" />
+					<Text 
+					text="{Addrs}" />
+					<Text 
+					text="{Desgn}" />
+
+				</cells>
+			</ColumnListItem>
+		</items>
+	</Table>
+	
+	<Button id="IdDisplay" press="onDisplay" text="Display" />
+	<Button id="IdUpdate" press="onUpdate" text="Update" />
+	<Button id="IdCreate" press="onCreate" text="Create" />
+	<Button id="IdDelete" press="onDelete" text="Delete" />
+	
+	<VBox class="sapUiSmallMargin">
+		<f:Form id="FormChange354"
+			editable="true">
+			<f:title>
+				<core:Title text="Employee " />
+			</f:title>
+			<f:layout>
+				<f:ResponsiveGridLayout
+					labelSpanXL="3"
+					labelSpanL="3"
+					labelSpanM="3"
+					labelSpanS="12"
+					adjustLabelSpan="false"
+					emptySpanXL="4"
+					emptySpanL="4"
+					emptySpanM="4"
+					emptySpanS="0"
+					columnsXL="1"
+					columnsL="1"
+					columnsM="1"
+					singleContainerFullSize="false" />
+			</f:layout>
+			<f:formContainers>
+				<f:FormContainer>
+					<f:formElements>
+					
+						<f:FormElement label="Employee iD">
+							<f:fields>
+								<Input value="{Empno}" id="empId"/>
+							</f:fields>
+						</f:FormElement>
+						
+						<f:FormElement label="Firstname">
+							<f:fields>
+								<Input value="{Fname}" id="fnameId"/>
+							</f:fields>
+						</f:FormElement>
+						
+						<f:FormElement label="Lastname">
+							<f:fields>
+								<Input value="{Lname}" id="lnameId"/>
+							</f:fields>
+						</f:FormElement>
+						
+						<f:FormElement label="Address">
+							<f:fields>
+								<Input value="{Addrs}" id="addrsId"/>
+							</f:fields>
+						</f:FormElement>
+						
+						<f:FormElement label="Designation">
+							<f:fields>
+								<Input value="{Desgn}" id="desgnId" />
+							</f:fields>
+						</f:FormElement>
+						
+						<f:FormElement label="">
+							<f:fields>
+								<Button  id="saveBtnId" text="Save" press="onSave"/>
+							</f:fields>
+						</f:FormElement>
+						
+						
+					</f:formElements>
+				</f:FormContainer>
+			</f:formContainers>
+		</f:Form>
+	</VBox>
+	
+	
+		</content>
+	</Page>
+</core:View>
