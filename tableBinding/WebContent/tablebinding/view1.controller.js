@@ -233,10 +233,56 @@ sap.ui.controller("tablebinding.view1", {
 
 
 	},
-
+	
+	//declaramos una variable global para el delete
+	deleteId: 0,
+	
 	//Delete
 
 	onDelete: function() {
+		
+		   //obtenemos el id del formulario
+			var oGrid = this.getView().byId("FormChange354");
+			//mostramos el formulario
+			oGrid.setVisible(false);
+			//Obtenemos la tabla del view
+			var oTable = this.getView().byId("idEmployeeTable");
+			//Obtenemos el elemento seleccionado
+			var contexts = oTable.getSelectedContexts();
+				
+			
+			//comprobamos si hay elementos seleccionados
+		if (contexts.length == 0) {
+			
+			//mensaje de error
+			sap.ui.define(["sap/m/MessageBox"], function (MessageBox) {
+								MessageBox.show(
+									"Please Select a Row", {
+										icon: MessageBox.Icon.ERROR,
+										title: "Update",
+										actions: [MessageBox.Action.OK],
+										emphasizedAction: MessageBox.Action.OK,
+										onClose: function (oAction) { / * do something * / }
+									}
+								);
+							});
+							
+		} else {
+			
+		//borramos el dato escogido	
+			
+		var items = contexts.map(function(c) {
+				return c.getObject();
+			});
+			
+	    	deleteId = items[0].Empno;
+
+			this.mode = "delete";
+			
+			//activamos la funcion Save sin presionar un boton
+			this.onSave();
+			
+		}
 
 	},
 
@@ -462,7 +508,87 @@ sap.ui.controller("tablebinding.view1", {
 		
 		else if (this.mode == "delete") {
 			
-			
+
+			OData.request({
+
+				requestUri: "proxy/http/vhcalnplci:8000/sap/opu/odata/sap/ZTABLE_SRV/",
+				method: "GET",
+				headers: {
+					"X-Requested-With": "XMLHttpRequest",
+					"Content-Type": "application/atom+xml",
+					"DataServiceVersion": "2.0",
+					"X-CSRF-Token": "Fetch"
+				}
+
+			},
+				function(data, response) {
+
+					header_xcsrf_token = response.headers['x-csrf-token'];
+					OData.request
+						({
+							requestUri: "proxy/http/vhcalnplci:8000/sap/opu/odata/sap/ZTABLE_SRV/ztableSet('" + deleteId + "')",
+							method: "DELETE",
+							headers: {
+								"X-Requested-With": "XMLHttpRequest",
+								"Content-Type": "application/atom+xml",
+								"DataServiceVersion": "2.0",
+								"Accept": "application/atom+xml, application/atomsvc+xml, application/xml",
+								"X-CSRF-Token": header_xcsrf_token
+							}
+						},
+						
+						//mensaje de éxito
+						function(data, response){
+							
+							//oTable.setBusy(true);
+							
+							//mensaje de éxito - Datos actualizados
+							sap.ui.define(["sap/m/MessageBox"], function (MessageBox) {
+								MessageBox.show(
+									"Data Delete Successfully", {
+										icon: MessageBox.Icon.SUCCESS,
+										title: "Delete",
+										actions: [MessageBox.Action.OK],
+										emphasizedAction: MessageBox.Action.OK,
+										//onClose: function (oAction) { / * do something * / }
+									}
+								);
+								
+								//oTable.setBusy(false);
+							}
+							
+							);
+							
+							//actualiza la lista con el ID del model
+							view.getModel("empModel").refresh();
+							
+							view.byId("FormChange354").setVisible(false);
+								
+													
+						},
+						
+						function(err){
+							
+							var request = err.request;
+							var response = err.response;
+							
+							//mensaje de error
+							sap.ui.define(["sap/m/MessageBox"], function (MessageBox) {
+												MessageBox.show(
+													"Delete Error", {
+														icon: MessageBox.Icon.ERROR,
+														title: "Delete",
+														actions: [MessageBox.Action.OK],
+														emphasizedAction: MessageBox.Action.OK,
+														onClose: function (oAction) { / * do something * / }
+													}
+												);
+											});
+						}
+						
+					);
+				}
+			)
 			
 			
 	 	}
