@@ -194,6 +194,43 @@ sap.ui.controller("tablebinding.view1", {
 	//Create
 
 	onCreate: function() {
+		
+			//obtenemos el id del formulario
+			var oGrid = this.getView().byId("FormChange354");
+			//mostramos el formulario
+			oGrid.setVisible(true);
+
+			//obtenemos el id del boton save
+			var oSave = this.getView().byId("saveBtnId");
+			oSave.setVisible(true);
+
+			//obtenemos el id del empleado y escribimos su valor en el campo correspondiente
+			var oId = this.getView().byId("empId");
+			oId.setEditable(true); //en este caso el employe ID tiene que ser editable osea true
+			oId.setValue(""); //Todos los campos tienen que estar vacios
+
+			//obtenemos el primer nombre del empleado y escribimos su valor en el campo correspondiente
+			var oId = this.getView().byId("fnameId");
+			oId.setEditable(true);
+			oId.setValue(""); //Todos los campos tienen que estar vacios
+
+			//obtenemos el segundo nombre del empleado y escribimos su valor en el campo correspondiente
+			var oId = this.getView().byId("lnameId");
+			oId.setEditable(true);
+			oId.setValue(""); //Todos los campos tienen que estar vacios
+
+			//obtenemos la direccion del empleado y escribimos su valor en el campo correspondiente
+			var oId = this.getView().byId("addrsId");
+			oId.setEditable(true);
+			oId.setValue(""); //Todos los campos tienen que estar vacios
+
+			//obtenemos el puesto del empleado y escribimos su valor en el campo correspondiente
+			var oId = this.getView().byId("desgnId");
+			oId.setEditable(true);
+			oId.setValue(""); //Todos los campos tienen que estar vacios
+
+			this.mode = "create";
+
 
 	},
 
@@ -208,6 +245,11 @@ sap.ui.controller("tablebinding.view1", {
 	onSave: function() {
 
 		view = this.getView();
+		
+		//Obtenemos la tabla del view
+		//var oTable = this.getView().byId("idEmployeeTable");
+		
+		//Para el Update -------------------------------------------------------------------------------------
 
 		if (this.mode == "update") {
 
@@ -257,7 +299,9 @@ sap.ui.controller("tablebinding.view1", {
 						//mensaje de éxito
 						function(data, response){
 							
-							//mensaje de éxito
+							//oTable.setBusy(true);
+							
+							//mensaje de éxito - Datos actualizados
 							sap.ui.define(["sap/m/MessageBox"], function (MessageBox) {
 								MessageBox.show(
 									"Data Updated Successfully", {
@@ -268,7 +312,12 @@ sap.ui.controller("tablebinding.view1", {
 										//onClose: function (oAction) { / * do something * / }
 									}
 								);
+								
+								//oTable.setBusy(false);
 							}
+							
+					
+							
 							);
 							
 							//actualiza la lista con el ID del model
@@ -302,5 +351,121 @@ sap.ui.controller("tablebinding.view1", {
 				}
 			)
 		}
+		
+		// Para el create ----------------------------------------------------------------------------------
+		
+		else if (this.mode == "create") {
+			
+		
+		    var oId = view.byId("empId").getValue();
+			var fname = view.byId("fnameId").getValue();
+			var lname = view.byId("lnameId").getValue();
+			var addrs = view.byId("addrsId").getValue();
+			var desgn = view.byId("desgnId").getValue();
+
+			OData.request({
+
+				requestUri: "proxy/http/vhcalnplci:8000/sap/opu/odata/sap/ZTABLE_SRV/",
+				method: "GET",
+				headers: {
+					"X-Requested-With": "XMLHttpRequest",
+					"Content-Type": "application/atom+xml",
+					"DataServiceVersion": "2.0",
+					"X-CSRF-Token": "Fetch"
+				}
+
+			},
+				function(data, response) {
+
+					header_xcsrf_token = response.headers['x-csrf-token'];
+					OData.request
+						({
+							requestUri: "proxy/http/vhcalnplci:8000/sap/opu/odata/sap/ZTABLE_SRV/ztableSet",
+							method: "POST",
+							headers: {
+								"X-Requested-With": "XMLHttpRequest",
+								"Content-Type": "application/atom+xml",
+								"DataServiceVersion": "2.0",
+								"Accept": "application/atom+xml, application/atomsvc+xml, application/xml",
+								"X-CSRF-Token": header_xcsrf_token
+							},
+
+							data:
+								{
+								Empno: oId,
+								Fname: fname,
+								Lname: lname,
+								Addrs: addrs,
+								Desgn: desgn,
+								}
+						},
+						
+						//mensaje de éxito
+						function(data, response){
+							
+							//oTable.setBusy(true);
+							
+							//mensaje de éxito - Datos actualizados
+							sap.ui.define(["sap/m/MessageBox"], function (MessageBox) {
+								MessageBox.show(
+									"Data Created Successfully", {
+										icon: MessageBox.Icon.SUCCESS,
+										title: "Created",
+										actions: [MessageBox.Action.OK],
+										emphasizedAction: MessageBox.Action.OK,
+										//onClose: function (oAction) { / * do something * / }
+									}
+								);
+								
+								//oTable.setBusy(false);
+							}
+							
+					
+							
+							);
+							
+							//actualiza la lista con el ID del model
+							view.getModel("empModel").refresh();
+							
+							view.byId("FormChange354").setVisible(false);
+								
+													
+						},
+						
+						function(err){
+							
+							var request = err.request;
+							var response = err.response;
+							
+							//mensaje de error
+							sap.ui.define(["sap/m/MessageBox"], function (MessageBox) {
+												MessageBox.show(
+													"Error, Request: "+request+" Response: "+response, {
+														icon: MessageBox.Icon.ERROR,
+														title: "Create Error",
+														actions: [MessageBox.Action.OK],
+														emphasizedAction: MessageBox.Action.OK,
+														onClose: function (oAction) { / * do something * / }
+													}
+												);
+											});
+						}
+						
+					);
+				}
+			)
+			
+			
+	 	}
+		
+		//Para el delete --------------------------------------------------------------------------------------
+		
+		else if (this.mode == "delete") {
+			
+			
+			
+			
+	 	}
+			
 	}
 });
