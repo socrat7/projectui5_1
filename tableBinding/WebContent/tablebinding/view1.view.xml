@@ -9,7 +9,7 @@
 				inset="false"
 				mode="SingleSelectLeft"
 				items="{
-							path: '/ztableSet'
+							path: 'empModel>/ztableSet'
 						
 		}">
 		<headerToolbar>
@@ -45,25 +45,25 @@
 				<cells>
 					
 					<Text 
-					text="{Empno}" />
+					text="{empModel>Empno}" />
 					<Text 
-					text="{Fname}" />
+					text="{empModel>Fname}" />
 					<Text 
-					text="{Lname}" />
+					text="{empModel>Lname}" />
 					<Text 
-					text="{Addrs}" />
+					text="{empModel>Addrs}" />
 					<Text 
-					text="{Desgn}" />
+					text="{empModel>Desgn}" />
 
 				</cells>
 			</ColumnListItem>
 		</items>
 	</Table>
 	
-	<Button id="IdDisplay" press="onDisplay" text="Display" />
-	<Button id="IdUpdate" press="onUpdate" text="Update" />
-	<Button id="IdCreate" press="onCreate" text="Create" />
-	<Button id="IdDelete" press="onDelete" text="Delete" />
+	<Button id="IdDisplay" press="onDisplay" text="Display" type="Accept" />
+	<Button id="IdUpdate" press="onUpdate" text="Update"  type="Ghost" />
+	<Button id="IdCreate" press="onCreate" text="Create" type="Emphasized" />
+	<Button id="IdDelete" press="onDelete" text="Delete" type="Reject" />
 	
 	<VBox class="sapUiSmallMargin">
 		<f:Form id="FormChange354"
@@ -123,7 +123,7 @@
 						
 						<f:FormElement label="">
 							<f:fields>
-								<Button  id="saveBtnId" text="Save" press="onSave"/>
+								<Button  id="saveBtnId" text="Save" press="onSave" type="Accept" />
 							</f:fields>
 						</f:FormElement>
 						

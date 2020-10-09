@@ -9,7 +9,9 @@ sap.ui.controller("tablebinding.view1", {
 	onInit: function() {
 
 		var oModel = new sap.ui.model.odata.ODataModel("proxy/http/vhcalnplci:8000/sap/opu/odata/sap/ZTABLE_SRV/");
-		this.getView().setModel(oModel);
+		
+		//para poder actualizar nuetsra pagina por ejemplo con el update tenemos que agregar un ID al model
+		this.getView().setModel(oModel, "empModel");
 
 		//obtenemos el id del formulario
 		var oGrid = this.getView().byId("FormChange354");
@@ -55,7 +57,22 @@ sap.ui.controller("tablebinding.view1", {
 
 		//comprobamos si hay elementos seleccionados
 		if (contexts.length == 0) {
-			alert("Please Select a Row")
+			
+			
+			//mensaje de error
+			sap.ui.define(["sap/m/MessageBox"], function (MessageBox) {
+								MessageBox.show(
+									"Please Select a Row", {
+										icon: MessageBox.Icon.ERROR,
+										title: "Display",
+										actions: [MessageBox.Action.OK],
+										emphasizedAction: MessageBox.Action.OK,
+										onClose: function (oAction) { / * do something * / }
+									}
+								);
+							});
+			
+			
 		} else {
 
 			//obtenemos el id del formulario
@@ -113,7 +130,21 @@ sap.ui.controller("tablebinding.view1", {
 
 		//comprobamos si hay elementos seleccionados
 		if (contexts.length == 0) {
-			alert("Please Select a Row")
+			
+			//mensaje de error
+			sap.ui.define(["sap/m/MessageBox"], function (MessageBox) {
+								MessageBox.show(
+									"Please Select a Row", {
+										icon: MessageBox.Icon.ERROR,
+										title: "Update",
+										actions: [MessageBox.Action.OK],
+										emphasizedAction: MessageBox.Action.OK,
+										onClose: function (oAction) { / * do something * / }
+									}
+								);
+							});
+							
+	
 		} else {
 
 			//obtenemos el id del formulario
@@ -172,28 +203,6 @@ sap.ui.controller("tablebinding.view1", {
 
 	},
 
-	//onMEssageSuccess
-
-	onSuccessMessageDialogPress: function() {
-		if (!this.oSuccessMessageDialog) {
-			this.oSuccessMessageDialog = new Dialog({
-				type: DialogType.Message,
-				title: "Success",
-				state: ValueState.Success,
-				content: new Text({ text: "Data Updated Successfully" }),
-				beginButton: new Button({
-					type: ButtonType.Emphasized,
-					text: "OK",
-					press: function() {
-						this.oSuccessMessageDialog.close();
-					}.bind(this)
-				})
-			});
-		}
-
-		this.oSuccessMessageDialog.open();
-	},
-
 	//onSave
 
 	onSave: function() {
@@ -236,33 +245,62 @@ sap.ui.controller("tablebinding.view1", {
 							},
 
 							data:
-							{
+								{
 								Empno: oId,
 								Fname: fname,
 								Lname: lname,
 								Addrs: addrs,
 								Desgn: desgn,
-
+								}
+						},
+						
+						//mensaje de éxito
+						function(data, response){
+							
+							//mensaje de éxito
+							sap.ui.define(["sap/m/MessageBox"], function (MessageBox) {
+								MessageBox.show(
+									"Data Updated Successfully", {
+										icon: MessageBox.Icon.SUCCESS,
+										title: "Updated",
+										actions: [MessageBox.Action.OK],
+										emphasizedAction: MessageBox.Action.OK,
+										//onClose: function (oAction) { / * do something * / }
+									}
+								);
 							}
-
+							);
+							
+							//actualiza la lista con el ID del model
+							view.getModel("empModel").refresh();
+							
+							view.byId("FormChange354").setVisible(false);
+								
+													
+						},
+						
+						function(err){
+							
+							var request = err.request;
+							var response = err.response;
+							
+							//mensaje de error
+							sap.ui.define(["sap/m/MessageBox"], function (MessageBox) {
+												MessageBox.show(
+													"Error, Request: "+request+" Response: "+response, {
+														icon: MessageBox.Icon.ERROR,
+														title: "Update",
+														actions: [MessageBox.Action.OK],
+														emphasizedAction: MessageBox.Action.OK,
+														onClose: function (oAction) { / * do something * / }
+													}
+												);
+											});
 						}
-
-
-						);
-
-
+						
+					);
 				}
-				//				function(err) {
-				//					var request = err.request;
-				//					var response = err.response;
-				//					alert("Error in Get -- Request " + request + " Response " + response);
-				//				}
-
-
 			)
-
 		}
-
 	}
-
 });
